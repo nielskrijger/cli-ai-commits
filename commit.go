@@ -1,48 +1,28 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"log"
-	"os"
-	"strings"
 )
 
 func GenerateMessage(apiKey string) {
-	for {
-		commitMessage := gitDiff(apiKey)
+	commitMessage := gitDiff(apiKey)
 
-		fmt.Printf("Suggested Commit Message: %s\n", commitMessage)
-
-		fmt.Print("Are you satisfied with this commit message? (yes/no): ")
-		reader := bufio.NewReader(os.Stdin)
-		userInput, _ := reader.ReadString('\n')
-		userInput = strings.TrimSpace(strings.ToLower(userInput))
-
-		if userInput == "yes" {
-			if err := CommitMessage(commitMessage); err != nil {
-				log.Fatalf("Error executing git commit: %s", err)
-			}
-			fmt.Println("Commit successfully created!")
-			break
-		} else {
-			fmt.Println("Generating a new commit message...")
-		}
-	}
+	fmt.Printf("%s\n", commitMessage)
 }
 
 func gitDiff(apiKey string) string {
-	err := IsGitRepo()
+	err := isGitRepo()
 	if err != nil {
 		log.Fatalf("Error: %s", err)
 	}
 
-	diff, err := GetStagedDiff()
+	diff, err := getStagedDiff()
 	if err != nil {
 		log.Fatalf("Error getting staged diff: %s", err)
 	}
 
-	formattedDiff := FormatDiff(diff)
+	formattedDiff := formatDiff(diff)
 
 	gen := &OpenAIGenerator{}
 	commitMsg, err := gen.GenerateCommitMsg(apiKey, "Generate a concise commit message for the following changes: "+formattedDiff)
