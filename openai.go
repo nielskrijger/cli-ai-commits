@@ -1,4 +1,4 @@
-package openai
+package main
 
 import (
 	"bytes"
@@ -10,11 +10,9 @@ import (
 
 const apiURL = "https://api.openai.com/v1/chat/completions"
 
-type CommitMessageGenerator interface {
-	GetCommitMessage(apiKey, prompt string) (string, error)
+type CommitMsgGenerator interface {
+	GenerateCommitMsg(apiKey, prompt string) (string, error)
 }
-
-type OpenAIGenerator struct{}
 
 type Message struct {
 	Role    string `json:"role"`
@@ -42,7 +40,9 @@ type RequestBody struct {
 	Messages []Message `json:"messages"`
 }
 
-func (o *OpenAIGenerator) GetCommitMessage(apiKey, prompt string) (string, error) {
+type OpenAIGenerator struct{}
+
+func (o *OpenAIGenerator) GenerateCommitMsg(apiKey, prompt string) (string, error) {
 	if apiKey == "" {
 		return "", errors.New("missing API key")
 	}

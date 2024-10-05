@@ -1,8 +1,6 @@
-package commit
+package main
 
 import (
-	"ai-git-commit/internal/git"
-	"ai-git-commit/internal/openai"
 	"bufio"
 	"fmt"
 	"log"
@@ -22,8 +20,8 @@ func GenerateMessage(apiKey string) {
 		userInput = strings.TrimSpace(strings.ToLower(userInput))
 
 		if userInput == "yes" {
-			if err := git.CommitMessage(commitMessage); err != nil {
-				log.Fatalf("Error executing git commit: %v", err)
+			if err := CommitMessage(commitMessage); err != nil {
+				log.Fatalf("Error executing git commit: %s", err)
 			}
 			fmt.Println("Commit successfully created!")
 			break
@@ -34,23 +32,23 @@ func GenerateMessage(apiKey string) {
 }
 
 func gitDiff(apiKey string) string {
-	err := git.IsGitRepo()
+	err := IsGitRepo()
 	if err != nil {
-		log.Fatalf("Error: %v", err)
+		log.Fatalf("Error: %s", err)
 	}
 
-	diff, err := git.GetStagedDiff()
+	diff, err := GetStagedDiff()
 	if err != nil {
-		log.Fatalf("Error getting staged diff: %v", err)
+		log.Fatalf("Error getting staged diff: %s", err)
 	}
 
-	formattedDiff := git.FormatDiff(diff)
+	formattedDiff := FormatDiff(diff)
 
-	commitMessageGenerator := &openai.OpenAIGenerator{}
-	commitMessage, err := commitMessageGenerator.GetCommitMessage(apiKey, "Generate a concise commit message for the following changes: "+formattedDiff)
+	gen := &OpenAIGenerator{}
+	commitMsg, err := gen.GenerateCommitMsg(apiKey, "Generate a concise commit message for the following changes: "+formattedDiff)
 	if err != nil {
-		log.Fatalf("Error generating commit message: %v", err)
+		log.Fatalf("Error generating commit message: %s", err)
 	}
 
-	return commitMessage
+	return commitMsg
 }

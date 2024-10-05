@@ -1,4 +1,4 @@
-package git
+package main
 
 import (
 	"os/exec"
@@ -17,7 +17,7 @@ func TestIsGitRepo(t *testing.T) {
 	}
 
 	err := IsGitRepo()
-	assert.NoError(t, err, "expected nil, got error: %v", err)
+	assert.NoError(t, err, "expected nil, got error: %s", err)
 }
 
 func TestGetStagedDiff(t *testing.T) {
@@ -38,7 +38,7 @@ func TestGetStagedDiff(t *testing.T) {
 	}
 
 	diff, err := GetStagedDiff()
-	assert.NoError(t, err, "expected nil, got error: %v", err)
+	assert.NoError(t, err, "expected nil, got error: %s", err)
 	assert.Contains(t, diff, "Modified package declaration", "expected diff to contain changes, got: %s", diff)
 }
 

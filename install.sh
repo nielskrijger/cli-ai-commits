@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BINARY_NAME="ai-git-commit"
+BINARY_NAME="cli-ai-commit"
 INSTALL_PATH="/usr/local/bin/$BINARY_NAME"
 
 echo "Building the Go program..."
